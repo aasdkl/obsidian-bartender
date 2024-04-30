@@ -54,24 +54,24 @@ export const folderSort = function (order: string[], foldersOnBottom?: boolean) 
   let fileExplorer = this.view,
     folderContents = this.file.children.slice();
   folderContents.sort(function (firstEl: TFile | TFolder, secondEl: TFile | TFolder) {
-    let firstIsFolder, secondIsFolder;
-    if (
-      foldersOnBottom &&
-      ((firstIsFolder = firstEl instanceof TFolder) || (secondIsFolder = secondEl instanceof TFolder))
-    ) {
-      return firstIsFolder && !secondIsFolder
-        ? 1
-        : secondIsFolder && !firstIsFolder
-        ? -1
-        : Collator(firstEl.name, secondEl.name);
-    } else {
-      if (!order) return Collator(firstEl.name, secondEl.name);
-
+    if (order) {
       const index1 = order.indexOf(firstEl.path);
       const index2 = order.indexOf(secondEl.path);
 
       return (index1 > -1 ? index1 : Infinity) - (index2 > -1 ? index2 : Infinity);
     }
+
+    let firstIsFolder = firstEl instanceof TFolder,
+      secondIsFolder= secondEl instanceof TFolder;
+    let res = firstIsFolder && !secondIsFolder
+      ? -1
+      : secondIsFolder && !firstIsFolder
+      ? 1
+      : Collator(firstEl.name, secondEl.name);
+    if (foldersOnBottom && (firstIsFolder || secondIsFolder)) {
+      res = -1 * res;
+    }
+    return res;
   });
   const items = folderContents
     .map((child: TAbstractFile) => fileExplorer.fileItems[child.path])
