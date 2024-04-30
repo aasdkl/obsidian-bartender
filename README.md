@@ -1,5 +1,23 @@
 ## Obsidian Bartender
 
+Dev Tips:
+
+After clone, install dependencies:
+
+```bash
+npm install
+```
+
+Use following commands to build `main.js` file
+
+```bash
+npm run dev
+# or
+npm run build
+```
+
+---
+
 Take control of your Obsidian workspace by organizing, rearranging, and filtering nav bars, ribbon bars, status bars, and the file explorer.
 
 ### File Explorer
