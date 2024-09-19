@@ -251,7 +251,6 @@ export const addSortButton = function (
 			filterEl?.parentElement?.show();
 			filterEl?.focus();
 		}
-		plugin.app.workspace.trigger("file-explorer-draggable-change", value);
 	});
 	return sortEl;
 };
