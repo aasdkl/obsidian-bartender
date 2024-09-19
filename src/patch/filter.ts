@@ -28,11 +28,11 @@ export class CustomFilter {
 			return;
 		}
 		const fileExplorerFilter = fileExplorerNav.createDiv("search-input-container filter");
+		fileExplorerFilter.hide();
 		fileExplorerNav.insertAdjacentElement("afterend", fileExplorerFilter);
 		const fileExplorerFilterInput = fileExplorerFilter.createEl("input");
 		fileExplorerFilterInput.placeholder = "Type to filter...";
 		fileExplorerFilterInput.type = "text";
-		fileExplorerFilter.hide();
 		const filterScope = new Scope(this.app.scope);
 		fileExplorerFilterInput.onfocus = () => {
 			this.app.keymap.pushScope(filterScope);

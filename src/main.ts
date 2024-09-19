@@ -125,7 +125,7 @@ export default class BartenderPlugin extends Plugin {
 						this.collapse.setRibbonBarSorter();
 					}
 
-					addSortButton(this, null, null, null, null);
+					// addSortButton(this, null, null, null, null);
 					// add sorter to all view actions icon groups
 					this.app.workspace.iterateRootLeaves((leaf) => {
 						if (

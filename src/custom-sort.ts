@@ -62,20 +62,6 @@ export const folderSortV2 = function (
 ) {
 	const children = e.children.slice();
 	children.sort((firstEl: TAbstractFile, secondEl: TAbstractFile) => {
-		let firstIsFolder;
-		let secondIsFolder;
-		if (
-			foldersOnBottom &&
-			((firstIsFolder = firstEl instanceof TFolder) ||
-				(secondIsFolder = secondEl instanceof TFolder))
-		) {
-			return firstIsFolder && !secondIsFolder
-				? 1
-				: secondIsFolder && !firstIsFolder
-					? -1
-					: Collator(firstEl.name, secondEl.name);
-		}
-
 		const order =
 			firstEl.parent &&
 			secondEl.parent &&
@@ -83,11 +69,27 @@ export const folderSortV2 = function (
 			!firstEl.parent.isRoot()
 				? settings.fileExplorerOrder[firstEl.parent.path] || undefined
 				: settings.fileExplorerOrder[""];
-		if (!order) return Collator(firstEl.name, secondEl.name);
-		const index1 = order.indexOf(firstEl.path);
-		const index2 = order.indexOf(secondEl.path);
 
-		return (index1 > -1 ? index1 : Infinity) - (index2 > -1 ? index2 : Infinity);
+		if (order) {
+			const index1 = order.indexOf(firstEl.path);
+			const index2 = order.indexOf(secondEl.path);
+
+			return (
+				(index1 > -1 ? index1 : Infinity) - (index2 > -1 ? index2 : Infinity)
+			);
+		}
+
+		let firstIsFolder = firstEl instanceof TFolder,
+			secondIsFolder= secondEl instanceof TFolder;
+		let res = firstIsFolder && !secondIsFolder
+			? -1
+			: secondIsFolder && !firstIsFolder
+			? 1
+			: Collator(firstEl.name, secondEl.name);
+		if (foldersOnBottom && (firstIsFolder || secondIsFolder)) {
+			res = -1 * res;
+		}
+		return res;
 	});
 	const i = [];
 	for (let r = 0, o = children; r < o.length; r++) {
@@ -146,8 +148,15 @@ function addButton(
 			} else {
 				leaf.containerEl.querySelector("div.nav-buttons-container").appendChild(button);
 			}
-		} else
-			leaf.containerEl.querySelector("div.nav-buttons-container").appendChild(button);
+		} else {
+			const reveal = leaf.containerEl.querySelector("div.nav-buttons-container > .nav-action-button.reveal-active-file-button");
+			if (reveal) {
+				leaf.containerEl
+					.querySelector("div.nav-buttons-container")
+					.insertBefore(button, reveal);
+			} else 
+				leaf.containerEl.querySelector("div.nav-buttons-container").appendChild(button);
+		}
 	}
 	return button;
 }
